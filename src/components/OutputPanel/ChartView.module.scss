@@ -1,0 +1,67 @@
+@use '../../styles/variables' as v;
+
+.chartWrapper {
+  background: v.$bg-surface;
+  border: 1px solid v.$border-color;
+  border-radius: v.$radius-lg;
+  padding: v.$space-md;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: v.$space-lg;
+  margin-bottom: v.$space-sm;
+  padding-left: v.$space-md;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: v.$space-xs;
+  font-size: 11px;
+  color: v.$text-muted;
+  font-weight: 500;
+}
+
+.legendDot {
+  width: 10px;
+  height: 3px;
+  border-radius: 2px;
+
+  &.orange {
+    background: #f97316;
+  }
+
+  &.green {
+    background: #4ade80;
+  }
+}
+
+.tooltip {
+  background: v.$bg-surface-raised;
+  border: 1px solid v.$border-color;
+  border-radius: v.$radius-md;
+  padding: v.$space-sm v.$space-md;
+  font-size: 12px;
+}
+
+.tooltipAge {
+  font-weight: 700;
+  color: v.$text-primary;
+  margin-bottom: v.$space-xs;
+  font-family: v.$font-mono;
+}
+
+.tooltipRow {
+  display: flex;
+  justify-content: space-between;
+  gap: v.$space-lg;
+  color: v.$text-muted;
+  margin-top: 2px;
+
+  span:last-child {
+    font-family: v.$font-mono;
+    color: v.$text-primary;
+  }
+}

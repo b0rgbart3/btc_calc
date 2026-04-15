@@ -1,0 +1,92 @@
+@use '../../styles/variables' as v;
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: v.$space-sm;
+  margin-bottom: v.$space-md;
+}
+
+.card {
+  background: v.$bg-surface;
+  border: 1px solid v.$border-color;
+  border-radius: v.$radius-md;
+  padding: v.$space-sm v.$space-md;
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-xs;
+}
+
+.cardLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: v.$text-muted;
+  display: flex;
+  align-items: center;
+  gap: v.$space-xs;
+}
+
+.liveIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: v.$accent-green;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.liveBadge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: v.$accent-green;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 3px;
+  padding: 0 4px;
+  line-height: 1.6;
+}
+
+.cardValue {
+  font-family: v.$font-mono;
+  font-size: 16px;
+  font-weight: 600;
+  color: v.$text-primary;
+
+  &.green {
+    color: v.$accent-green;
+  }
+
+  &.orange {
+    color: v.$accent-orange;
+  }
+
+  &.large {
+    font-size: 20px;
+  }
+}
+
+.cardSubValue {
+  font-family: v.$font-mono;
+  font-size: 12px;
+  font-weight: 500;
+  color: v.$text-muted;
+}
+
+.placeholder {
+  color: v.$text-muted;
+  font-family: v.$font-mono;
+  font-size: 16px;
+}

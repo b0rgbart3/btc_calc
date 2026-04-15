@@ -1,0 +1,62 @@
+@use '../../styles/variables' as v;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$text-muted;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: v.$space-xs;
+  background: v.$bg-surface-raised;
+  border: 1px solid v.$border-color;
+  border-radius: v.$radius-sm;
+  padding: 0 v.$space-sm;
+  height: 34px;
+  transition: border-color v.$transition-fast;
+
+  &:focus-within {
+    border-color: v.$accent-green;
+  }
+}
+
+.affix {
+  font-size: 13px;
+  color: v.$text-muted;
+  flex-shrink: 0;
+  font-family: v.$font-mono;
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: v.$text-primary;
+  font-family: v.$font-mono;
+  font-size: 13px;
+  font-weight: 600;
+  width: 100%;
+
+  &::placeholder {
+    color: v.$text-muted;
+  }
+
+  // Hide number spinners
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  -moz-appearance: textfield;
+}

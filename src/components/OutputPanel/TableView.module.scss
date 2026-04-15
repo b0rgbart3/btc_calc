@@ -1,0 +1,104 @@
+@use '../../styles/variables' as v;
+
+.container {
+  background: v.$bg-surface;
+  border: 1px solid v.$border-color;
+  border-radius: v.$radius-lg;
+  overflow: hidden;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: v.$bg-surface-raised;
+}
+
+.th {
+  padding: v.$space-sm v.$space-sm;
+  text-align: right;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$text-muted;
+  border-bottom: 1px solid v.$border-color;
+  white-space: nowrap;
+
+  &:first-child {
+    text-align: left;
+  }
+}
+
+.tr {
+  border-bottom: 1px solid v.$border-color;
+  transition: background v.$transition-fast;
+
+  &:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &.retirementRow {
+    border-left: 3px solid v.$accent-green;
+
+    .td:first-child {
+      padding-left: calc(v.$space-sm - 3px);
+    }
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.td {
+  padding: v.$space-sm v.$space-sm;
+  text-align: right;
+  color: v.$text-muted;
+  font-family: v.$font-mono;
+  white-space: nowrap;
+
+  &:first-child {
+    text-align: left;
+    color: v.$text-primary;
+    font-weight: 600;
+  }
+}
+
+.retirementBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  .badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: v.$accent-green;
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    border-radius: 3px;
+    padding: 0 4px;
+    line-height: 1.6;
+  }
+}
+
+.orange {
+  color: v.$accent-orange;
+}
+
+.green {
+  color: v.$accent-green;
+}

@@ -1,0 +1,52 @@
+@use './styles/variables' as v;
+
+.appLayout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: v.$space-sm;
+  padding: v.$space-md v.$space-lg;
+  border-bottom: 1px solid v.$border-color;
+  background: v.$bg-surface;
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 22px;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.6));
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: v.$text-primary;
+}
+
+.apiError {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: v.$danger;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: v.$radius-sm;
+  padding: 2px 8px;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  gap: v.$space-lg;
+  padding: v.$space-lg;
+  overflow: hidden;
+  min-height: 0;
+}
