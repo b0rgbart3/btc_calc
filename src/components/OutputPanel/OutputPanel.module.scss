@@ -59,6 +59,41 @@
   }
 }
 
+.downloadBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px v.$space-md;
+  border-radius: v.$radius-md;
+  border: 1px solid v.$border-color;
+  background: transparent;
+  color: v.$text-muted;
+  font-family: v.$font-sans;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: auto;
+  transition: color v.$transition-fast, background v.$transition-fast, border-color v.$transition-fast;
+
+  svg {
+    opacity: 0.6;
+  }
+
+  &:hover:not(:disabled) {
+    color: v.$text-primary;
+    border-color: v.$border-color-active;
+
+    svg {
+      opacity: 1;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+}
+
 .content {
   flex: 1;
   overflow: hidden;

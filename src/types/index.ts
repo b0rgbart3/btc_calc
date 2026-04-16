@@ -8,6 +8,8 @@ export interface CalcInputs {
   transitionYears: number;
   inflationPct: number;
   desiredAnnualIncome: number;
+  capitalGainsTaxPct: number;
+  targetRetirementAge: number | null;
 }
 
 export interface DataPoint {
@@ -16,6 +18,7 @@ export interface DataPoint {
   btcPrice: number;
   portfolioValueUsd: number;
   annualSpendUsd: number;
+  taxPaidUsd: number;
   phase: 'accumulation' | 'drawdown';
 }
 

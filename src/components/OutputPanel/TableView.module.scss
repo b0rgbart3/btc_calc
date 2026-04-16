@@ -4,13 +4,14 @@
   background: v.$bg-surface;
   border: 1px solid v.$border-color;
   border-radius: v.$radius-lg;
-  overflow: hidden;
   max-height: 420px;
   overflow-y: auto;
+  overflow-x: auto;
 }
 
 .table {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
   font-size: 12px;
 }
@@ -101,4 +102,12 @@
 
 .green {
   color: v.$accent-green;
+}
+
+.amber {
+  color: v.$accent-amber;
+}
+
+.red {
+  color: v.$danger;
 }

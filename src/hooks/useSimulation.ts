@@ -15,6 +15,9 @@ function getGrowthRate(year: number, inputs: CalcInputs): number {
  * Computes the inflation-adjusted annuity income whose BTC cost exactly
  * equals btcHeld by life expectancy, given projected BTC price growth.
  * Returns the base (year-0) USD annual income that depletes holdings to zero.
+ *
+ * With tax, each dollar of desired after-tax spending requires selling
+ * 1/(1 - taxRate) dollars of BTC (simplified full-gain assumption).
  */
 function computeAnnuityIncome(
   btcHeld: number,
@@ -23,11 +26,13 @@ function computeAnnuityIncome(
   retireAge: number,
   lifeExpectancy: number,
   inflationRate: number,
+  taxRate: number,
   inputs: CalcInputs,
 ): number {
   const years = lifeExpectancy - retireAge;
   if (years <= 0 || btcHeld <= 0) return 0;
 
+  const taxFactor = taxRate > 0 ? 1 / (1 - taxRate) : 1;
   let currentPrice = btcPrice;
   let btcWeightedSum = 0;
 
@@ -35,7 +40,7 @@ function computeAnnuityIncome(
     // Each drawdown year is one step ahead of retirement (retirement year has no spend),
     // so grow price first — this mirrors the main simulation exactly.
     currentPrice = currentPrice * (1 + getGrowthRate(startYear + 1 + yr, inputs));
-    btcWeightedSum += Math.pow(1 + inflationRate, yr) / currentPrice;
+    btcWeightedSum += (Math.pow(1 + inflationRate, yr) * taxFactor) / currentPrice;
   }
 
   return btcWeightedSum > 0 ? btcHeld / btcWeightedSum : 0;
@@ -62,6 +67,10 @@ export function useSimulation(
 
     const totalYears = inputs.lifeExpectancy - inputs.currentAge;
     const inflationRate = inputs.inflationPct / 100;
+    const taxRate = inputs.capitalGainsTaxPct / 100;
+
+    // Track weighted average cost basis (starting at current price for existing holdings)
+    let avgCostBasis = currentBtcPrice;
 
     for (let year = 0; year <= totalYears; year++) {
       const age = inputs.currentAge + year;
@@ -72,22 +81,20 @@ export function useSimulation(
         btcPrice = btcPrice * (1 + growthRate);
       }
 
-      // Check retirement: find first year where annuity income >= desired income.
-      // annuityIncome is the spending base that depletes BTC to exactly zero by
-      // lifeExpectancy, so the drawdown will naturally reach zero.
+      // Check retirement. Two modes:
+      // 1. Target mode: force retirement at a specific age, solve for max income.
+      // 2. Normal mode: find first year where annuity income >= desired income.
       if (!retirementFound) {
         const yearsRemaining = inputs.lifeExpectancy - age;
         if (yearsRemaining > 0) {
-          const annuityIncome = computeAnnuityIncome(
-            btcHeld,
-            btcPrice,
-            year,
-            age,
-            inputs.lifeExpectancy,
-            inflationRate,
-            inputs,
-          );
-          if (annuityIncome >= inputs.desiredAnnualIncome) {
+          const isTargetYear = inputs.targetRetirementAge !== null && age === inputs.targetRetirementAge;
+          const annuityIncome = (isTargetYear || inputs.targetRetirementAge === null)
+            ? computeAnnuityIncome(btcHeld, btcPrice, year, age, inputs.lifeExpectancy, inflationRate, taxRate, inputs)
+            : 0;
+
+          const shouldRetire = isTargetYear || (inputs.targetRetirementAge === null && annuityIncome >= inputs.desiredAnnualIncome);
+
+          if (shouldRetire) {
             retirementFound = true;
             retirementAge = age;
             totalBtcAtRetirement = btcHeld;
@@ -100,24 +107,38 @@ export function useSimulation(
       }
 
       let annualSpendUsd = 0;
+      let taxPaidUsd = 0;
       let phase: DataPoint['phase'];
 
       if (age < retirementAge) {
-        // Accumulation: buy more BTC this year
+        // Accumulation: buy more BTC this year, update weighted average cost basis
         if (inputs.annualBuyUsd > 0) {
-          btcHeld = btcHeld + inputs.annualBuyUsd / btcPrice;
+          const newBtc = inputs.annualBuyUsd / btcPrice;
+          avgCostBasis = (btcHeld * avgCostBasis + newBtc * btcPrice) / (btcHeld + newBtc);
+          btcHeld = btcHeld + newBtc;
         }
         phase = 'accumulation';
       } else if (age === retirementAge) {
         // Retirement year is the peak — no buy, no sell.
         phase = 'accumulation';
       } else {
-        // Drawdown: use annuity-derived base so BTC depletes to ~zero by life expectancy
+        // Drawdown: sell enough BTC to cover desired after-tax spend plus capital gains tax.
+        // gainFraction = proportion of each sale that is taxable gain.
         const yearsIntoRetirement = age - retirementAge - 1;
         annualSpendUsd =
           retirementAnnuityBase *
           Math.pow(1 + inflationRate, yearsIntoRetirement);
-        btcHeld = Math.max(0, btcHeld - annualSpendUsd / btcPrice);
+
+        const gainFraction = btcPrice > avgCostBasis
+          ? Math.min(1, (btcPrice - avgCostBasis) / btcPrice)
+          : 0;
+        const effectiveTaxRate = taxRate * gainFraction;
+        const grossSaleUsd = effectiveTaxRate < 1
+          ? annualSpendUsd / (1 - effectiveTaxRate)
+          : annualSpendUsd;
+        taxPaidUsd = grossSaleUsd - annualSpendUsd;
+
+        btcHeld = Math.max(0, btcHeld - grossSaleUsd / btcPrice);
         phase = 'drawdown';
       }
 
@@ -127,6 +148,7 @@ export function useSimulation(
         btcPrice,
         portfolioValueUsd: btcHeld * btcPrice,
         annualSpendUsd,
+        taxPaidUsd,
         phase,
       });
     }

@@ -18,13 +18,14 @@ function fmtUsd(v: number): string {
 interface StatCardProps {
   label: string;
   value: string | null;
+  valueAnnotation?: string | null;
   subValue?: string | null;
   color?: 'green' | 'orange' | 'white';
   isLive?: boolean;
   large?: boolean;
 }
 
-function StatCard({ label, value, subValue, color = 'white', isLive = false, large = false }: StatCardProps) {
+function StatCard({ label, value, valueAnnotation, subValue, color = 'white', isLive = false, large = false }: StatCardProps) {
   const valueClass = [
     styles.cardValue,
     color === 'green' ? styles.green : '',
@@ -44,7 +45,12 @@ function StatCard({ label, value, subValue, color = 'white', isLive = false, lar
         )}
       </span>
       {value !== null ? (
-        <span className={valueClass}>{value}</span>
+        <span className={valueClass}>
+          {value}
+          {valueAnnotation && (
+            <span className={styles.cardValueAnnotation}>{valueAnnotation}</span>
+          )}
+        </span>
       ) : (
         <span className={styles.placeholder}>—</span>
       )}
@@ -77,6 +83,10 @@ export function StatsGrid({ result, btcPrice, btcLoading }: StatsGridProps) {
       <StatCard
         label="Your Retirement Age"
         value={result ? result.retirementAge.toString() : null}
+        valueAnnotation={result ? (() => {
+          const yearsAway = result.retirementAge - result.dataPoints[0].age;
+          return yearsAway === 0 ? '(this year)' : `(in ${yearsAway} year${yearsAway !== 1 ? 's' : ''})`;
+        })() : null}
         color="white"
         large
       />

@@ -13,6 +13,15 @@ interface OutputPanelProps {
   btcLoading: boolean;
 }
 
+function DownloadIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7 1v8M4 6l3 3 3-3" />
+      <path d="M1 11h12v2H1z" />
+    </svg>
+  );
+}
+
 function ChartIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -29,6 +38,33 @@ function TableIcon() {
       <line x1="5" y1="5" x2="5" y2="13" />
     </svg>
   );
+}
+
+function downloadCsv(result: SimulationResult) {
+  const currentYear = new Date().getFullYear();
+  const startAge = result.dataPoints.length > 0 ? result.dataPoints[0].age : 0;
+
+  const headers = ['Year', 'Age', 'BTC Holdings', 'BTC Price (USD)', 'Portfolio Value (USD)', 'Annual Spend (USD)', 'Annual Spend (BTC)', 'Monthly Budget (USD)', 'Monthly Budget (BTC)'];
+  const rows = result.dataPoints.map((dp) => [
+    currentYear + (dp.age - startAge),
+    dp.age,
+    dp.btcHeld.toFixed(6),
+    dp.btcPrice.toFixed(2),
+    dp.portfolioValueUsd.toFixed(2),
+    dp.annualSpendUsd > 0 ? dp.annualSpendUsd.toFixed(2) : '',
+    dp.annualSpendUsd > 0 ? (dp.annualSpendUsd / dp.btcPrice).toFixed(8) : '',
+    dp.annualSpendUsd > 0 ? (dp.annualSpendUsd / 12).toFixed(2) : '',
+    dp.annualSpendUsd > 0 ? (dp.annualSpendUsd / 12 / dp.btcPrice).toFixed(8) : '',
+  ]);
+
+  const csv = [headers, ...rows].map((r) => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'btc-retirement-projection.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 export function OutputPanel({ result, btcPrice, btcLoading }: OutputPanelProps) {
@@ -53,6 +89,15 @@ export function OutputPanel({ result, btcPrice, btcLoading }: OutputPanelProps) 
         >
           <TableIcon />
           Table
+        </button>
+        <button
+          className={styles.downloadBtn}
+          onClick={() => result && downloadCsv(result)}
+          disabled={!result}
+          title="Download table as CSV"
+        >
+          <DownloadIcon />
+          CSV
         </button>
       </div>
 

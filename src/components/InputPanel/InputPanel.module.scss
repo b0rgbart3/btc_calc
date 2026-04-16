@@ -3,7 +3,7 @@
 .panel {
   display: flex;
   flex-direction: column;
-  gap: v.$space-sm;
+  gap: v.$space-md;
   flex: 0 0 v.$panel-min-width;
   overflow-y: auto;
   padding-right: v.$space-sm;
@@ -52,4 +52,38 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: v.$space-sm;
+}
+
+.toggleBtn {
+  flex-shrink: 0;
+  width: 30px;
+  height: 17px;
+  border-radius: 9px;
+  background: v.$border-color-active;
+  border: 1px solid v.$border-color-active;
+  cursor: pointer;
+  position: relative;
+  transition: background v.$transition-fast, border-color v.$transition-fast;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: v.$text-muted;
+    top: 2px;
+    left: 2px;
+    transition: transform v.$transition-fast, background v.$transition-fast;
+  }
+
+  &.toggleBtnOn {
+    background: rgba(74, 222, 128, 0.15);
+    border-color: rgba(74, 222, 128, 0.4);
+
+    &::before {
+      transform: translateX(13px);
+      background: v.$accent-green;
+    }
+  }
 }

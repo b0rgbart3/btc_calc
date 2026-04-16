@@ -11,11 +11,13 @@ const DEFAULT_INPUTS: CalcInputs = {
   lifeExpectancy: 90,
   btcHeld: 0.5,
   annualBuyUsd: 12000,
-  startGrowthPct: 60,
-  endGrowthPct: 15,
-  transitionYears: 8,
-  inflationPct: 3,
+  startGrowthPct: 30,
+  endGrowthPct: 7,
+  transitionYears: 21,
+  inflationPct: 7,
   desiredAnnualIncome: 80000,
+  capitalGainsTaxPct: 15,
+  targetRetirementAge: null,
 };
 
 function App() {
@@ -35,7 +37,11 @@ function App() {
         {error && <span className={styles.apiError}>Price API Unavailable</span>}
       </header>
       <main className={styles.main}>
-        <InputPanel inputs={inputs} onChange={handleChange} />
+        <InputPanel
+          inputs={inputs}
+          onChange={handleChange}
+          computedIncome={inputs.targetRetirementAge !== null ? (result?.annualBudgetUsd ?? null) : null}
+        />
         <OutputPanel result={result} btcPrice={price} btcLoading={loading} />
       </main>
     </div>

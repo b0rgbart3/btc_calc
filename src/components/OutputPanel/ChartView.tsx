@@ -66,6 +66,15 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
 }
 
 export function ChartView({ dataPoints, retirementAge }: ChartViewProps) {
+  const startAge = dataPoints[0]?.age ?? 0;
+  const currentYear = new Date().getFullYear();
+
+  const btc500kAge = dataPoints.find((dp) => dp.btcPrice >= 500_000)?.age ?? null;
+  const btc500kYear = btc500kAge !== null ? currentYear + (btc500kAge - startAge) : null;
+
+  const btcMillionAge = dataPoints.find((dp) => dp.btcPrice >= 1_000_000)?.age ?? null;
+  const btcMillionYear = btcMillionAge !== null ? currentYear + (btcMillionAge - startAge) : null;
+
   const chartData: ChartDataPoint[] = dataPoints.map((dp) => ({
     age: dp.age,
     accumulation: dp.phase === 'accumulation' ? dp.btcHeld : dp.age === retirementAge ? dp.btcHeld : null,
@@ -94,9 +103,21 @@ export function ChartView({ dataPoints, retirementAge }: ChartViewProps) {
           <span className={`${styles.legendDot} ${styles.green}`} />
           Drawdown
         </div>
+        {btc500kAge !== null && (
+          <div className={styles.legendItem}>
+            <span className={`${styles.legendDot} ${styles.sky}`} />
+            BTC = $500K
+          </div>
+        )}
+        {btcMillionAge !== null && (
+          <div className={styles.legendItem}>
+            <span className={`${styles.legendDot} ${styles.amber}`} />
+            BTC = $1M
+          </div>
+        )}
       </div>
       <ResponsiveContainer width="100%" height={340}>
-        <LineChart data={chartData} margin={{ top: 28, right: 16, left: 8, bottom: 8 }}>
+        <LineChart data={chartData} margin={{ top: 52, right: 16, left: 8, bottom: 8 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#2d2d2d" />
           <XAxis
             dataKey="age"
@@ -122,17 +143,50 @@ export function ChartView({ dataPoints, retirementAge }: ChartViewProps) {
             label={{
               value: `Retire ${retirementAge}`,
               position: 'top',
+              dy: -36,
               fill: '#4ade80',
               fontSize: 11,
               fontFamily: "'JetBrains Mono', monospace",
             }}
           />
+          {btc500kAge !== null && (
+            <ReferenceLine
+              x={btc500kAge}
+              stroke="#38bdf8"
+              strokeDasharray="4 4"
+              strokeWidth={1.5}
+              label={{
+                value: `₿=$500K (${btc500kYear})`,
+                position: 'top',
+                dy: -22,
+                fill: '#38bdf8',
+                fontSize: 11,
+                fontFamily: "'JetBrains Mono', monospace",
+              }}
+            />
+          )}
+          {btcMillionAge !== null && (
+            <ReferenceLine
+              x={btcMillionAge}
+              stroke="#f59e0b"
+              strokeDasharray="4 4"
+              strokeWidth={1.5}
+              label={{
+                value: `₿=$1M (${btcMillionYear})`,
+                position: 'top',
+                dy: -8,
+                fill: '#f59e0b',
+                fontSize: 11,
+                fontFamily: "'JetBrains Mono', monospace",
+              }}
+            />
+          )}
           <Line
             dataKey="accumulation"
             stroke="#f97316"
             strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 4, fill: '#f97316', strokeWidth: 0 }}
+            dot={{ r: 3, fill: '#f97316', strokeWidth: 0 }}
+            activeDot={{ r: 5, fill: '#f97316', strokeWidth: 0 }}
             connectNulls={false}
             isAnimationActive={false}
           />
@@ -140,8 +194,8 @@ export function ChartView({ dataPoints, retirementAge }: ChartViewProps) {
             dataKey="drawdown"
             stroke="#4ade80"
             strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 4, fill: '#4ade80', strokeWidth: 0 }}
+            dot={{ r: 3, fill: '#4ade80', strokeWidth: 0 }}
+            activeDot={{ r: 5, fill: '#4ade80', strokeWidth: 0 }}
             connectNulls={false}
             isAnimationActive={false}
           />

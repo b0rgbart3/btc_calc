@@ -9,6 +9,8 @@ interface SliderInputProps {
   step: number;
   formatValue?: (v: number) => string;
   sublabel?: string;
+  variant?: 'orange' | 'sky' | 'amber' | 'gray';
+  disabled?: boolean;
 }
 
 export function SliderInput({
@@ -20,17 +22,26 @@ export function SliderInput({
   step,
   formatValue = (v) => v.toString(),
   sublabel,
+  variant,
+  disabled = false,
 }: SliderInputProps) {
   const fillPct = ((value - min) / (max - min)) * 100;
 
   return (
-    <div className={styles.wrapper}>
+    <div className={[
+      styles.wrapper,
+      variant ? styles[variant] : '',
+      disabled ? styles.disabled : '',
+    ].filter(Boolean).join(' ')}>
       <div className={styles.header}>
         <div>
           <span className={styles.label}>{label}</span>
           {sublabel && <span className={styles.sublabel}> — {sublabel}</span>}
         </div>
-        <span className={styles.value}>{formatValue(value)}</span>
+        <div className={styles.valueGroup}>
+          {disabled && <span className={styles.autoBadge}>AUTO</span>}
+          <span className={styles.value}>{formatValue(value)}</span>
+        </div>
       </div>
       <input
         type="range"
@@ -41,6 +52,7 @@ export function SliderInput({
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         style={{ '--fill-pct': `${fillPct}%` } as React.CSSProperties}
+        disabled={disabled}
       />
     </div>
   );

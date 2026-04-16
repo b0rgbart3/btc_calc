@@ -78,6 +78,14 @@
   }
 }
 
+.cardValueAnnotation {
+  font-family: v.$font-mono;
+  font-size: 14px;
+  font-weight: 500;
+  color: v.$text-muted;
+  margin-left: 0.3em;
+}
+
 .cardSubValue {
   font-family: v.$font-mono;
   font-size: 12px;
