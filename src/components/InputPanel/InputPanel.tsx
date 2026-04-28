@@ -1,5 +1,4 @@
 import type { CalcInputs } from "../../types";
-import { NumberInput } from "./NumberInput";
 import { SliderInput } from "./SliderInput";
 import styles from "./InputPanel.module.scss";
 
@@ -42,16 +41,16 @@ export function InputPanel({
           <span className={styles.sectionTitle}>Your Profile</span>
         </div>
         <div className={styles.card}>
-          <div className={styles.row}>
-            <NumberInput
-              label="Current Age"
-              value={inputs.currentAge}
-              onChange={(v) => onChange({ currentAge: v })}
-              min={18}
-              max={100}
-              step={1}
-            />
-          </div>
+          <SliderInput
+            label="Current Age"
+            value={inputs.currentAge}
+            onChange={(v) => onChange({ currentAge: v })}
+            min={10}
+            max={90}
+            step={1}
+            formatValue={(v) => `${v}`}
+            variant="sky"
+          />
           <SliderInput
             label="Life Expectancy"
             value={inputs.lifeExpectancy}
@@ -74,21 +73,27 @@ export function InputPanel({
         </div>
       </section>
 
-      {/* ANNUAL STRATEGY */}
+      {/* MONTHLY STRATEGY */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <span className={styles.sectionTitle}>Annual Stacking Strategy</span>
+          <span className={styles.sectionTitle}>Stacking Strategy</span>
         </div>
         <div className={styles.card}>
           <SliderInput
-            label="Annual Stacking Amount"
+            label="Monthly Stacking Amount"
             value={inputs.annualBuyUsd}
             onChange={(v) => onChange({ annualBuyUsd: v })}
             min={0}
-            max={200000}
-            step={500}
+            max={30000}
+            step={100}
             formatValue={fmtDollars}
           />
+          <div className={styles.annualTotal}>
+            <span className={styles.annualTotalLabel}>Annual total</span>
+            <span className={styles.annualTotalValue}>
+              {fmtDollars(inputs.annualBuyUsd * 12)}
+            </span>
+          </div>
         </div>
       </section>
 
@@ -98,6 +103,23 @@ export function InputPanel({
           <span className={styles.sectionTitle}>Price Growth Model</span>
         </div>
         <div className={styles.card}>
+          <div className={styles.presetRow}>
+            {(
+              [
+                { label: "Bear", value: 15 },
+                { label: "Base", value: 20 },
+                { label: "Bull", value: 30 },
+              ] as const
+            ).map(({ label, value }) => (
+              <button
+                key={label}
+                className={`${styles.presetBtn} ${inputs.startGrowthPct === value ? styles.presetActive : ""}`}
+                onClick={() => onChange({ startGrowthPct: value })}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           <SliderInput
             label="Starting Growth"
             value={inputs.startGrowthPct}
@@ -113,7 +135,7 @@ export function InputPanel({
             value={inputs.endGrowthPct}
             onChange={(v) => onChange({ endGrowthPct: v })}
             min={0}
-            max={100}
+            max={15}
             step={1}
             formatValue={fmtPct}
             variant="gray"
@@ -171,6 +193,22 @@ export function InputPanel({
             formatValue={fmtPct}
             variant="sky"
           />
+          <SliderInput
+            label="Additional Monthly Income"
+            value={inputs.additionalMonthlyIncome}
+            onChange={(v) => onChange({ additionalMonthlyIncome: v })}
+            min={0}
+            max={10000}
+            step={100}
+            formatValue={fmtDollars}
+            variant="sky"
+          />
+          {inputs.additionalMonthlyIncome > 0 && (
+            <div className={styles.annualTotal}>
+              <span className={styles.annualTotalLabel}>Annual additional income</span>
+              <span className={styles.annualTotalValue}>{fmtDollars(inputs.additionalMonthlyIncome * 12)}</span>
+            </div>
+          )}
         </div>
       </section>
 

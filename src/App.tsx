@@ -6,24 +6,27 @@ import { InputPanel } from './components/InputPanel/InputPanel';
 import { OutputPanel } from './components/OutputPanel/OutputPanel';
 import styles from './App.module.scss';
 
+const FALLBACK_BTC_PRICE = 85000;
+
 const DEFAULT_INPUTS: CalcInputs = {
-  currentAge: 35,
+  currentAge: 45,
   lifeExpectancy: 90,
   btcHeld: 0.5,
-  annualBuyUsd: 12000,
+  annualBuyUsd: 1000,
   startGrowthPct: 30,
   endGrowthPct: 7,
   transitionYears: 21,
   inflationPct: 7,
   desiredAnnualIncome: 80000,
   capitalGainsTaxPct: 15,
+  additionalMonthlyIncome: 0,
   targetRetirementAge: null,
 };
 
 function App() {
   const [inputs, setInputs] = useState<CalcInputs>(DEFAULT_INPUTS);
   const { price, loading, error } = useBtcPrice();
-  const result = useSimulation(inputs, price);
+  const result = useSimulation(inputs, price ?? FALLBACK_BTC_PRICE);
 
   function handleChange(patch: Partial<CalcInputs>) {
     setInputs((prev) => ({ ...prev, ...patch }));
@@ -42,7 +45,7 @@ function App() {
           onChange={handleChange}
           computedIncome={inputs.targetRetirementAge !== null ? (result?.annualBudgetUsd ?? null) : null}
         />
-        <OutputPanel result={result} btcPrice={price} btcLoading={loading} />
+        <OutputPanel result={result} btcPrice={price ?? FALLBACK_BTC_PRICE} btcLoading={loading} />
       </main>
     </div>
   );

@@ -65,6 +65,39 @@ function StatCard({ label, value, valueAnnotation, subValue, color = 'white', is
   );
 }
 
+function BudgetCard({ result }: { result: SimulationResult | null }) {
+  return (
+    <div className={styles.card}>
+      <span className={styles.cardLabel}>Budget</span>
+      <div className={styles.budgetRow}>
+        <span className={styles.budgetSection}>
+          <span className={styles.budgetSectionLabel}>Annual</span>
+          {result ? (
+            <>
+              <span className={`${styles.cardValue} ${styles.orange}`}>{fmtBtc(result.annualBudgetBtc)}</span>
+              <span className={styles.cardSubValue}>{fmtUsd(result.annualBudgetUsd)}</span>
+            </>
+          ) : (
+            <span className={styles.placeholder}>—</span>
+          )}
+        </span>
+        <span className={styles.budgetDivider} />
+        <span className={styles.budgetSection}>
+          <span className={styles.budgetSectionLabel}>Monthly</span>
+          {result ? (
+            <>
+              <span className={`${styles.cardValue} ${styles.orange}`}>{fmtBtc(result.monthlyBudgetBtc)}</span>
+              <span className={styles.cardSubValue}>{fmtUsd(result.monthlyBudgetUsd)}</span>
+            </>
+          ) : (
+            <span className={styles.placeholder}>—</span>
+          )}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function StatsGrid({ result, btcPrice, btcLoading }: StatsGridProps) {
   const priceValue = btcLoading && btcPrice === null
     ? null
@@ -100,16 +133,15 @@ export function StatsGrid({ result, btcPrice, btcLoading }: StatsGridProps) {
         value={result ? fmtUsd(result.btcPriceAtRetirement) : null}
         color="green"
       />
+      <BudgetCard result={result} />
       <StatCard
-        label="Annual Budget"
-        value={result ? fmtBtc(result.annualBudgetBtc) : null}
-        subValue={result ? fmtUsd(result.annualBudgetUsd) : null}
-        color="orange"
-      />
-      <StatCard
-        label="Monthly Budget"
-        value={result ? fmtBtc(result.monthlyBudgetBtc) : null}
-        subValue={result ? fmtUsd(result.monthlyBudgetUsd) : null}
+        label="Legacy Estate"
+        value={result ? fmtBtc(result.estateValueBtc) : null}
+        subValue={result
+          ? result.estateValueBtc > 0
+            ? fmtUsd(result.estateValueUsd)
+            : 'Stack fully drawn down'
+          : null}
         color="orange"
       />
     </div>

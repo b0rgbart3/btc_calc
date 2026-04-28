@@ -16,8 +16,6 @@ interface ChartViewProps {
   retirementAge: number;
 }
 
-// For recharts, we use a single data array but two Line components.
-// Points in the "wrong" phase return null so the line breaks.
 interface ChartDataPoint {
   age: number;
   accumulation: number | null;
@@ -37,8 +35,7 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
   const d = payload[0]?.payload;
   if (!d) return null;
 
-  const btcHeld =
-    d.accumulation !== null ? d.accumulation : d.drawdown !== null ? d.drawdown : 0;
+  const btcHeld = d.accumulation !== null ? d.accumulation : d.drawdown !== null ? d.drawdown : 0;
 
   return (
     <div className={styles.tooltip}>
@@ -132,6 +129,7 @@ export function ChartView({ dataPoints, retirementAge }: ChartViewProps) {
             tickLine={false}
             axisLine={false}
             tickFormatter={formatBtc}
+            tickCount={10}
             width={70}
           />
           <Tooltip content={<CustomTooltip />} />

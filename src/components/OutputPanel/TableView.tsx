@@ -27,7 +27,7 @@ export function TableView({ dataPoints, retirementAge }: TableViewProps) {
             <th className={styles.th}>Age</th>
             <th className={styles.th}>BTC Holdings</th>
             <th className={styles.th}>BTC Price</th>
-            <th className={styles.th}>Portfolio Value</th>
+            <th className={styles.th}>Stack Value</th>
             <th className={styles.th}>
               Annual
               <br />

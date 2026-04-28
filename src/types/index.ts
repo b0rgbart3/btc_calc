@@ -9,6 +9,7 @@ export interface CalcInputs {
   inflationPct: number;
   desiredAnnualIncome: number;
   capitalGainsTaxPct: number;
+  additionalMonthlyIncome: number;
   targetRetirementAge: number | null;
 }
 
@@ -31,4 +32,6 @@ export interface SimulationResult {
   monthlyBudgetBtc: number;
   annualBudgetUsd: number;
   monthlyBudgetUsd: number;
+  estateValueBtc: number;
+  estateValueUsd: number;
 }

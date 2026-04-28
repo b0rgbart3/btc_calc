@@ -54,6 +54,62 @@
   gap: v.$space-sm;
 }
 
+.presetRow {
+  display: flex;
+  gap: v.$space-xs;
+}
+
+.presetBtn {
+  flex: 1;
+  padding: 5px 0;
+  border-radius: v.$radius-md;
+  border: 1px solid v.$border-color;
+  background: transparent;
+  color: v.$text-muted;
+  font-family: v.$font-sans;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: color v.$transition-fast, background v.$transition-fast, border-color v.$transition-fast;
+
+  &:hover {
+    color: v.$text-primary;
+    border-color: v.$border-color-active;
+  }
+
+  &.presetActive {
+    background: rgba(249, 115, 22, 0.1);
+    border-color: rgba(249, 115, 22, 0.4);
+    color: v.$accent-orange;
+  }
+}
+
+.annualTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$space-xs v.$space-sm;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid v.$border-color;
+  border-radius: v.$radius-sm;
+}
+
+.annualTotalLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$text-muted;
+  opacity: 0.7;
+}
+
+.annualTotalValue {
+  font-size: 12px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
 .toggleBtn {
   flex-shrink: 0;
   width: 30px;
