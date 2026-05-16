@@ -7,8 +7,8 @@ interface StatsGridProps {
   btcLoading: boolean;
 }
 
-function fmtBtc(v: number): string {
-  return `₿${v.toFixed(8)}`;
+function fmtBtc(v: number, decimals = 8): string {
+  return `₿${v.toFixed(decimals)}`;
 }
 
 function fmtUsd(v: number): string {
@@ -74,7 +74,7 @@ function BudgetCard({ result }: { result: SimulationResult | null }) {
           <span className={styles.budgetSectionLabel}>Annual</span>
           {result ? (
             <>
-              <span className={`${styles.cardValue} ${styles.orange}`}>{fmtBtc(result.annualBudgetBtc)}</span>
+              <span className={`${styles.cardValue} ${styles.orange}`}>{fmtBtc(result.annualBudgetBtc, 3)}</span>
               <span className={styles.cardSubValue}>{fmtUsd(result.annualBudgetUsd)}</span>
             </>
           ) : (
@@ -86,7 +86,7 @@ function BudgetCard({ result }: { result: SimulationResult | null }) {
           <span className={styles.budgetSectionLabel}>Monthly</span>
           {result ? (
             <>
-              <span className={`${styles.cardValue} ${styles.orange}`}>{fmtBtc(result.monthlyBudgetBtc)}</span>
+              <span className={`${styles.cardValue} ${styles.orange}`}>{fmtBtc(result.monthlyBudgetBtc, 3)}</span>
               <span className={styles.cardSubValue}>{fmtUsd(result.monthlyBudgetUsd)}</span>
             </>
           ) : (
@@ -136,7 +136,7 @@ export function StatsGrid({ result, btcPrice, btcLoading }: StatsGridProps) {
       <BudgetCard result={result} />
       <StatCard
         label="Legacy Estate"
-        value={result ? fmtBtc(result.estateValueBtc) : null}
+        value={result ? fmtBtc(result.estateValueBtc, 4) : null}
         subValue={result
           ? result.estateValueBtc > 0
             ? fmtUsd(result.estateValueUsd)

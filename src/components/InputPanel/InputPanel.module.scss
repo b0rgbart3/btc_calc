@@ -7,6 +7,13 @@
   flex: 0 0 v.$panel-min-width;
   overflow-y: auto;
   padding-right: v.$space-sm;
+
+  @media (max-width: 768px) {
+    flex: none;
+    width: 100%;
+    overflow-y: visible;
+    padding-right: 0;
+  }
 }
 
 .section {

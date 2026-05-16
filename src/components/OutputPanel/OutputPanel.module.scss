@@ -6,6 +6,10 @@
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    overflow: visible;
+  }
 }
 
 .viewToggle {
@@ -97,4 +101,8 @@
 .content {
   flex: 1;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    overflow: visible;
+  }
 }
